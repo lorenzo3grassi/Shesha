@@ -1,0 +1,49 @@
+if len(sys.argv) < 2:
+    print("Usage: <script> <kappa> [p]")
+    exit()
+
+kappa = int(sys.argv[1])
+p = 170141183460469231731687303715884105773
+
+if len(sys.argv) > 2:
+    p = int(sys.argv[2])
+
+def D_reg(R):
+    S = RR['z']
+    z = S.gen()
+    f = (1-z)^12 * (1+z)^(64 + 2 * R)
+    for j in range(1, (100+2*R)):
+        if f.monomial_coefficient(z^j) <= 0:
+            return j
+
+def get_round_num_S_star(kappa):
+    for R in range(1, 1000):
+        val = binomial(52 + 2 * R + D_reg(R), 52 + 2 * R)
+        if log(val, 2) >= (kappa/2):
+            return R
+
+def get_round_num_snake(kappa):
+    D = get_round_num_S_star(kappa)
+    x = ceil(kappa / 40 + log(5, 2))
+    R = 16 + max(D, x)
+    return R
+
+def get_round_num_internal_body(kappa, p):
+    x0 = kappa/4 + 8
+    R = ceil(x0)
+    return R
+
+def get_round_num(kappa, p):
+    print("Security level: " + str(kappa) + " bits")
+    print("prime p: " + str(p) + " (" + str(ceil(log(p, 2))) + " bits)")
+    R_H = get_round_num_internal_body(kappa, p)
+    print("Number of rounds of P^(H)* (without security margin): " + str(R_H))
+    R_G = get_round_num_snake(kappa)
+    print("First Number of rounds of P_K^(S)* (without security margin): " + str(R_G))
+    R_HHH = ceil(R_H * 1.125)
+    print("Number of rounds of P^(H)* (with security margin): " + str(R_HHH))
+    R_GGG = ceil(R_G * 1.25)
+    print("Number of rounds of P_K^(S)* (with security margin): " + str(R_GGG))
+    return R_HHH, R_GGG
+
+R_HHH, R_GGG = get_round_num(kappa, p)
