@@ -36,14 +36,14 @@ def get_round_num_internal_body(kappa, p):
 def get_round_num(kappa, p):
     print("Security level: " + str(kappa) + " bits")
     print("prime p: " + str(p) + " (" + str(ceil(log(p, 2))) + " bits)")
-    R_H = get_round_num_internal_body(kappa, p)
-    print("Number of rounds of P^(H)* (without security margin): " + str(R_H))
-    R_G = get_round_num_snake(kappa)
-    print("First Number of rounds of P_K^(S)* (without security margin): " + str(R_G))
-    R_HHH = ceil(R_H * 1.125)
-    print("Number of rounds of P^(H)* (with security margin): " + str(R_HHH))
-    R_GGG = ceil(R_G * 1.25)
-    print("Number of rounds of P_K^(S)* (with security margin): " + str(R_GGG))
-    return R_HHH, R_GGG
+    R_B = get_round_num_internal_body(kappa, p)
+    print("Number of rounds of P^(B)* (without security margin): " + str(R_B))
+    R_H = get_round_num_snake(kappa)
+    print("First Number of rounds of P_K^(H)* (without security margin): " + str(R_H))
+    R_BSM = ceil(R_B * 1.125)
+    print("Number of rounds of P^(B)* (with security margin): " + str(R_BSM))
+    R_HSM = ceil(R_H * 1.25)
+    print("Number of rounds of P_K^(H)* (with security margin): " + str(R_HSM))
+    return R_BSM, R_HSM 
 
-R_HHH, R_GGG = get_round_num(kappa, p)
+R_BSM, R_HSM = get_round_num(kappa, p)
